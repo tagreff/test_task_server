@@ -39,19 +39,19 @@ void MainWindow::getConnectionAttributes() // Получаем адрес и п�
     port = attribute.firstChildElement("port").text().toUShort();//получаем порт
 }
 
-void MainWindow::onNewConnection()
+void MainWindow::onNewConnection() //метод вызывается при новом подключении
 {
    QTcpSocket *clientSocket = _server->nextPendingConnection();
-   connect(clientSocket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
-   connect(clientSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onSocketStateChanged(QAbstractSocket::SocketState)));
+   connect(clientSocket, SIGNAL(readyRead()), this, SLOT(onReadyRead())); //метод onReadyRead будет вызван при получении данных от клиента
+   connect(clientSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onSocketStateChanged(QAbstractSocket::SocketState)));// обработка изменений состояния клиента
 
     _sockets.push_back(clientSocket);
-    for (QTcpSocket* socket : _sockets) {
+    for (QTcpSocket* socket : _sockets) { //сообщение дял подключившегося клиента
         socket->write(QByteArray::fromStdString(clientSocket->peerAddress().toString().toStdString() + " connected to server !\n"));
     }
 }
 
-void MainWindow::onSocketStateChanged(QAbstractSocket::SocketState socketState)
+void MainWindow::onSocketStateChanged(QAbstractSocket::SocketState socketState) //удаляем сокет из списка при его отключении
 {
     if (socketState == QAbstractSocket::UnconnectedState)
     {
@@ -60,16 +60,16 @@ void MainWindow::onSocketStateChanged(QAbstractSocket::SocketState socketState)
     }
 }
 
-void MainWindow::onReadyRead()
+void MainWindow::onReadyRead()// при получении данных от клиента
 {
     QTcpSocket* sender = static_cast<QTcpSocket*>(QObject::sender());
-    QByteArray datas = sender->readAll();
+    QByteArray datas = sender->readAll(); //сыитываем данные от клиента
     QString DataAsString = datas;
     QStringList longList = DataAsString.split(";");
 
     for (int i = 0; i<longList.size(); i++)
     {
-      listItem = new QListWidgetItem(longList.at(i), ui->itemsList);
+      listItem = new QListWidgetItem(longList.at(i), ui->itemsList); 
     }
     longList.clear();
     ui->acceptButton->setEnabled(true);

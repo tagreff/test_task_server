@@ -22,16 +22,19 @@ public slots:
     void onNewConnection();
     void onSocketStateChanged(QAbstractSocket::SocketState socketState);
     void onReadyRead();
+
 private slots:
     void on_acceptButton_clicked();
-
     void on_rejectButton_clicked();
+      void getConnectionAttributes();
 
 private:
     Ui::MainWindow *ui;
     QTcpServer  *_server = nullptr;
     QList<QTcpSocket*>  _sockets;
     QListWidgetItem* listItem;
+    QString address;
+    quint16 port;
 };
 
 #endif // MAINWINDOW_H
